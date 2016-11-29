@@ -62,12 +62,9 @@ public class MyFrame extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                System.out.println("Button clicked");
-                // TODO Auto-generated method stub
                 String objectiveFunc = objFunction.getText().trim();
-                System.out.println("objectiveFunc: " + objectiveFunc);
+
                 String constraints = constraintsArea.getText().trim();
-                System.out.println("constraints: " + constraints);
 
                 if (objectiveFunc.equals("") || constraints.equals("")) {
                     return;
@@ -87,12 +84,13 @@ public class MyFrame extends JFrame {
 
             @Override
             public void run() {
-                // TODO Auto-generated method stub
                 Normalization normalization = new Normalization(objectiveFunc, constraints);
+
                 normalization.transferToCanonicalForm();
-//				normalization.objectiveFuncPrint();
-//				normalization.canonicalFormPrint();
-//				normalization.constantTermPrint();
+                normalization.objectiveFuncPrint();
+                normalization.canonicalFormPrint();
+                normalization.constantTermPrint();
+
                 SimplexTable st = new SimplexTable(normalization.getMaxProblemState());
                 st.initSimplexTable(normalization.getNumOfDecisionVar(), normalization.getCoeffOfMatrix(),
                         normalization.getCoeffOfDecisionVar(), normalization.getConstantTermList());

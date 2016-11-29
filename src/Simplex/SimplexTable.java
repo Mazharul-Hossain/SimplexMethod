@@ -49,9 +49,9 @@ public class SimplexTable {
                 checkLineRow.add(coeffOfVarRow.get(i) - total);
             }
         }
-//		for(int i=0;i<checkLineRow.size();i++){
-//			System.out.print(checkLineRow.get(i)+" ");
-//		}
+        for (int i = 0; i < checkLineRow.size(); i++) {
+            System.out.print(checkLineRow.get(i) + " ");
+        }
     }
 
     private void initRuleruleOfSubstituteCol(int size) {
