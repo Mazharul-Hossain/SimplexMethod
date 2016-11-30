@@ -60,7 +60,7 @@ public class SimplexTable {
         }
     }
 
-    public void execIteration() {
+    public void execIteration(double z, int iteration) {
         //step2
         boolean flag = false;
         ArrayList<Pair<Integer, Double>> list = new ArrayList<Pair<Integer, Double>>();
@@ -71,10 +71,22 @@ public class SimplexTable {
             }
         }
         if (flag == false) {
-            System.out.println("�ѵõ����Ž�");
-            sb.append("�ѵõ����Ž�" + "\n");
+            String msg = "The value of the objective function z = ";
+
+            if (maxProblem == true) {
+                msg += z + "\n";
+            } else {
+                msg += -z + "\n";
+            }
+            msg += "Has been the optimal solution\n";
+            msg += "Number of Iteration = " + iteration + "\n";
+
+            System.out.println(msg);
+            sb.append(msg + "\n");
+
             return;
         }
+
         //step3
         boolean flag1 = false;
         for (int index = 0; index < list.size(); index++) {
@@ -86,10 +98,11 @@ public class SimplexTable {
             }
         }
         if (flag1 == false) {
-            System.out.println("���������޽�");
-            sb.append("���������޽�" + "\n");
+            System.out.println("This problem is unbounded");
+            sb.append("This problem is unbounded" + "\n");
             return;
         }
+
         //step4
         Pair<Integer, Double> VarSwappenIn = Math.max(list);
         ruleOfSubstituteColUpdate(VarSwappenIn.getFirstEle());
@@ -98,36 +111,32 @@ public class SimplexTable {
         pivot(VarSwappedOut.getFirstEle(), VarSwappenIn.getFirstEle());
         checkLineRowUpdate();
         for (int i = 0; i < constTermCol.size(); i++) {
-            System.out.println("��������x" + (basicVarCol.get(i) + 1) + " ����� " + constTermCol.get(i));
-            sb.append("��������x" + (basicVarCol.get(i) + 1) + " ����� " + constTermCol.get(i) + "\n");
+            System.out.println("Base variable: x" + (basicVarCol.get(i) + 1) + " Constant term: " + constTermCol.get(i));
+            sb.append("Base variable: x" + (basicVarCol.get(i) + 1) + " Constant term: " + constTermCol.get(i) + "\n");
         }
-        double z = 0.0;
+
+        iteration++;
+        //double z = 0.0;
+
         for (int i = 0; i < coeffOfVarRow.size() - coeffOfBasicVarCol.size(); i++) {
             if (basicVarCol.contains(i)) {
                 int position = basicVarCol.indexOf(i);
                 z += coeffOfVarRow.get(i) * constTermCol.get(position);
             }
         }
-        if (maxProblem == true) {
-            System.out.println("Ŀ�꺯����ȡֵ z = " + z);
-            sb.append("Ŀ�꺯����ȡֵ z = " + z + "\n");
-        } else {
-            System.out.println("Ŀ�꺯����ȡֵ z = " + -z);
-            sb.append("Ŀ�꺯����ȡֵ z = " + -z + "\n");
-        }
-
-        execIteration();
+        execIteration(z, iteration);
     }
 
     /**
-     * �����б任
+     * Elementary Line Transformation
      *
-     * @param l ������������������
-     * @param k ����������ǻ�������
-     */
+     * @param l swap out variables (base variables)
+     * @param k into the variable (non-base variables)
+     **/
     private void pivot(int l, int k) {
         double mainEle = coeffMatrix.get(l).get(k);
-//		System.out.println("��Ԫ���ǣ�"+ mainEle);
+        System.out.println("The main elements are: " + mainEle);
+
         for (int i = 0; i < constTermCol.size(); i++) {
             double ratio = coeffMatrix.get(i).get(k) / mainEle;
             if (i != l) {

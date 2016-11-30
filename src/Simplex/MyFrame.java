@@ -13,12 +13,12 @@ public class MyFrame extends JFrame {
      */
     private static final long serialVersionUID = -6417002867509503344L;
     private ImageIcon image = new ImageIcon("image\\0018.jpg");
-    private JLabel objFuncLabel = new JLabel("Ŀ�꺯����");
+    private JLabel objFuncLabel = new JLabel("Objective function");
     private JTextField objFunction = new JTextField();
-    private JLabel constraintsLabel = new JLabel("Լ��������");
+    private JLabel constraintsLabel = new JLabel("Restrictions");
     private JTextArea constraintsArea = new JTextArea();
-    private JButton button = new JButton("���");
-    private JLabel solutionLabel = new JLabel("���Ž⣺");
+    private JButton button = new JButton("Solve");
+    private JLabel solutionLabel = new JLabel("Optimal solution");
     private JTextArea solutionShow = new JTextArea();
 
     public MyFrame() {
@@ -28,8 +28,9 @@ public class MyFrame extends JFrame {
         setIconImage(image.getImage());
         setTitle("Simplex Method");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
+
         initComponents();
+        setVisible(true);
 
     }
 
@@ -38,23 +39,31 @@ public class MyFrame extends JFrame {
     }
 
     private void initComponents() {
+
         Container container = getContentPane();
         GroupLayout layout = new GroupLayout(container);
         container.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
+        // horizontal group
         GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
+
         hGroup.addGroup(layout.createParallelGroup().addComponent(objFuncLabel).addComponent(objFunction).addComponent(constraintsLabel).addComponent(constraintsArea).addComponent(button));
+
         hGroup.addGroup(layout.createParallelGroup().addComponent(solutionLabel).addComponent(solutionShow));
+
         layout.setHorizontalGroup(hGroup);
 
+        // vertical group
         GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
+
         vGroup.addGroup(layout.createParallelGroup().addComponent(objFuncLabel));
         vGroup.addGroup(layout.createParallelGroup().addComponent(objFunction));
         vGroup.addGroup(layout.createParallelGroup().addComponent(constraintsLabel).addComponent(solutionLabel));
         vGroup.addGroup(layout.createParallelGroup().addComponent(constraintsArea).addComponent(solutionShow));
         vGroup.addGroup(layout.createParallelGroup().addComponent(button));
+
         layout.setVerticalGroup(vGroup);
 
         button.addActionListener(new ActionListener() {
@@ -94,7 +103,7 @@ public class MyFrame extends JFrame {
                 SimplexTable st = new SimplexTable(normalization.getMaxProblemState());
                 st.initSimplexTable(normalization.getNumOfDecisionVar(), normalization.getCoeffOfMatrix(),
                         normalization.getCoeffOfDecisionVar(), normalization.getConstantTermList());
-                st.execIteration();
+                st.execIteration(0.0, 0);
                 solutionShow.setText(st.getStringBuffer().toString());
             }
         }).start();
