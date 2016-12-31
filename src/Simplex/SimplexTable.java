@@ -17,8 +17,14 @@ public class SimplexTable {
     private boolean maxProblem;
     private StringBuffer sb = new StringBuffer();
 
+    private double z;
+    private int iteration;
+
     public SimplexTable(boolean maxProblem) {
         this.maxProblem = maxProblem;
+
+        this.z = 0.0;
+        this.iteration = 0;
     }
 
     public StringBuffer getStringBuffer() {
@@ -49,9 +55,9 @@ public class SimplexTable {
                 checkLineRow.add(coeffOfVarRow.get(i) - total);
             }
         }
-        for (int i = 0; i < checkLineRow.size(); i++) {
+        /*for (int i = 0; i < checkLineRow.size(); i++) {
             System.out.print(checkLineRow.get(i) + " ");
-        }
+        }*/
     }
 
     private void initRuleruleOfSubstituteCol(int size) {
@@ -60,71 +66,73 @@ public class SimplexTable {
         }
     }
 
-    public void execIteration(double z, int iteration) {
-        //step2
-        boolean flag = false;
-        ArrayList<Pair<Integer, Double>> list = new ArrayList<Pair<Integer, Double>>();
-        for (int i = 0; i < coeffOfVarRow.size(); i++) {
-            if (!basicVarCol.contains(i) && checkLineRow.get(i) > 0) {
-                flag = true;
-                list.add(new Pair<Integer, Double>(i, checkLineRow.get(i)));
-            }
-        }
-        if (flag == false) {
-            String msg = "The value of the objective function z = ";
-
-            if (maxProblem == true) {
-                msg += z + "\n";
-            } else {
-                msg += -z + "\n";
-            }
-            msg += "Has been the optimal solution\n";
-            msg += "Number of Iteration = " + iteration + "\n";
-
-            System.out.println(msg);
-            sb.append(msg + "\n");
-
-            return;
-        }
-
-        //step3
-        boolean flag1 = false;
-        for (int index = 0; index < list.size(); index++) {
-            int value = list.get(index).getFirstEle();
-            for (int j = 0; j < coeffMatrix.size(); j++) {
-                if (coeffMatrix.get(j).get(value) > 0) {
-                    flag1 = true;
+    public void execIteration() {
+        while (true) {
+            //step2
+            boolean flag = false;
+            ArrayList<Pair<Integer, Double>> list = new ArrayList<Pair<Integer, Double>>();
+            for (int i = 0; i < coeffOfVarRow.size(); i++) {
+                if (!basicVarCol.contains(i) && checkLineRow.get(i) > 0) {
+                    flag = true;
+                    list.add(new Pair<Integer, Double>(i, checkLineRow.get(i)));
                 }
             }
-        }
-        if (flag1 == false) {
-            System.out.println("This problem is unbounded");
-            sb.append("This problem is unbounded" + "\n");
-            return;
-        }
+            if (flag == false) {
+                String msg = "The value of the objective function z = ";
 
-        //step4
-        Pair<Integer, Double> VarSwappenIn = Math.max(list);
-        ruleOfSubstituteColUpdate(VarSwappenIn.getFirstEle());
-        Pair<Integer, Double> VarSwappedOut = Math.min(ruleOfSubstituteCol);
-        //step5
-        pivot(VarSwappedOut.getFirstEle(), VarSwappenIn.getFirstEle());
-        checkLineRowUpdate();
-        for (int i = 0; i < constTermCol.size(); i++) {
+                if (maxProblem == true) {
+                    msg += z + "\n";
+                } else {
+                    msg += -z + "\n";
+                }
+                msg += "Has been the optimal solution\n";
+                msg += "Number of Iteration = " + iteration + "\n";
+
+                System.out.println(msg);
+                sb.append(msg + "\n");
+
+                return;
+            }
+
+            //step3
+            boolean flag1 = false;
+            for (int index = 0; index < list.size(); index++) {
+                int value = list.get(index).getFirstEle();
+                for (int j = 0; j < coeffMatrix.size(); j++) {
+                    if (coeffMatrix.get(j).get(value) > 0) {
+                        flag1 = true;
+                    }
+                }
+            }
+            if (flag1 == false) {
+                System.out.println("This problem is unbounded");
+                sb.append("This problem is unbounded" + "\n");
+                return;
+            }
+
+            //step4
+            Pair<Integer, Double> VarSwappenIn = Math.max(list);
+            ruleOfSubstituteColUpdate(VarSwappenIn.getFirstEle());
+            Pair<Integer, Double> VarSwappedOut = Math.min(ruleOfSubstituteCol);
+            //step5
+            pivot(VarSwappedOut.getFirstEle(), VarSwappenIn.getFirstEle());
+            checkLineRowUpdate();
+        /*for (int i = 0; i < constTermCol.size(); i++) {
             System.out.println("Base variable: x" + (basicVarCol.get(i) + 1) + " Constant term: " + constTermCol.get(i));
             sb.append("Base variable: x" + (basicVarCol.get(i) + 1) + " Constant term: " + constTermCol.get(i) + "\n");
-        }
+        }*/
 
-        iteration++;
-        //double z = 0.0;
+            iteration++;
+            //double z = 0.0;
 
-        for (int i = 0; i < coeffOfVarRow.size() - coeffOfBasicVarCol.size(); i++) {
-            if (basicVarCol.contains(i)) {
-                int position = basicVarCol.indexOf(i);
-                z += coeffOfVarRow.get(i) * constTermCol.get(position);
+            for (int i = 0; i < coeffOfVarRow.size() - coeffOfBasicVarCol.size(); i++) {
+                if (basicVarCol.contains(i)) {
+                    int position = basicVarCol.indexOf(i);
+                    z += coeffOfVarRow.get(i) * constTermCol.get(position);
+                }
             }
+            //System.out.println("The value of the objective function z = " + z);
         }
-        execIteration(z, iteration);
     }
 
     /**
@@ -135,7 +143,7 @@ public class SimplexTable {
      **/
     private void pivot(int l, int k) {
         double mainEle = coeffMatrix.get(l).get(k);
-        System.out.println("The main elements are: " + mainEle);
+        // System.out.println("The main elements are: " + mainEle);
 
         for (int i = 0; i < constTermCol.size(); i++) {
             double ratio = coeffMatrix.get(i).get(k) / mainEle;
@@ -143,8 +151,9 @@ public class SimplexTable {
                 for (int j = 0; j < coeffMatrix.get(i).size(); j++) {
                     if (j != k) {
                         coeffMatrix.get(i).set(j, coeffMatrix.get(i).get(j) - ratio * coeffMatrix.get(l).get(j));
+                    } else {
+                        coeffMatrix.get(i).set(k, 0.0);
                     }
-                    coeffMatrix.get(i).set(k, 0.0);
                 }
                 constTermCol.set(i, constTermCol.get(i) - ratio * constTermCol.get(l));
             }
@@ -152,8 +161,9 @@ public class SimplexTable {
         for (int j = 0; j < coeffMatrix.get(l).size(); j++) {
             if (j != k) {
                 coeffMatrix.get(l).set(j, coeffMatrix.get(l).get(j) / mainEle);
+            } else {
+                coeffMatrix.get(l).set(k, 1.0);
             }
-            coeffMatrix.get(l).set(k, 1.0);
         }
         constTermCol.set(l, constTermCol.get(l) / mainEle);
 

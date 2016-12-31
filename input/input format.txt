@@ -12,3 +12,19 @@ max z = -7x + -8x
 4x + 5x <= 9
 
 // **************************
+max z = 3x + 4x
+
+2.5x + 1x <= 20
+3x + 3x <= 30
+1x + 2x <= 16
+1x + 0x >= 0
+0x + 1x >= 0
+
+// **************************
+
+amar objective function er coefficient guli ekta file likha ache
+f.txt
+restrictions er coefficient guli er bam pasher coefficient guli ekta file e likha ache
+a.txt
+restrictions er coefficient guli er dan pasher guli ekta file e likha ache
+b.txt

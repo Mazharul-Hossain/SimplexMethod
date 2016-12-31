@@ -4,16 +4,24 @@ import java.util.ArrayList;
 
 public class Math {
     public static Pair<Integer, Double> max(ArrayList<Pair<Integer, Double>> list) {
-        int pos = list.get(0).getFirstEle();
-        double max = list.get(0).getSecondEle();
-        for (Pair<Integer, Double> value : list) {
-            if (max < value.getSecondEle()) {
-                max = value.getSecondEle();
-                pos = value.getFirstEle();
+        int pos = 0;
+        double max = 0.0;
+        try {
+            pos = list.get(0).getFirstEle();
+            max = list.get(0).getSecondEle();
+
+            for (Pair<Integer, Double> value : list) {
+                if (max < value.getSecondEle()) {
+                    max = value.getSecondEle();
+                    pos = value.getFirstEle();
+                }
             }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        } catch (StackOverflowError e) {
+            System.err.println(e.getMessage());
         }
         return new Pair<Integer, Double>(pos, max);
-
     }
 
     public static Pair<Integer, Double> min(ArrayList<Double> list) {
