@@ -175,7 +175,7 @@ public class SimplexTable {
         // calculation of maximization variable
         z += constTermCol.get(l) * checkLineRow.get(k);
 
-        basicVarCol.set(l, k);
+        basicVarCol.add(k);
         coeffOfBasicVarCol.set(l, coeffOfVarRow.get(k));
     }
 
