@@ -39,6 +39,7 @@ public class SimplexTable {
         constTermCol = constantTerms;
         this.coeffMatrix = coeffMatrix;
         coeffOfVarRow = coeffOfDecisionVar;
+
         initCheckLineRow();
         initRuleruleOfSubstituteCol(constantTerms.size());
     }
@@ -101,8 +102,10 @@ public class SimplexTable {
                 for (int j = 0; j < coeffMatrix.size(); j++) {
                     if (coeffMatrix.get(j).get(value) > 0) {
                         flag1 = true;
+                        break;
                     }
                 }
+                if (flag1 == false) break;
             }
             if (flag1 == false) {
                 System.out.println("This problem is unbounded");
@@ -125,12 +128,12 @@ public class SimplexTable {
             iteration++;
             //double z = 0.0;
 
-            for (int i = 0; i < coeffOfVarRow.size() - coeffOfBasicVarCol.size(); i++) {
+            /*for (int i = 0; i < coeffOfVarRow.size() - coeffOfBasicVarCol.size(); i++) {
                 if (basicVarCol.contains(i)) {
                     int position = basicVarCol.indexOf(i);
                     z += coeffOfVarRow.get(i) * constTermCol.get(position);
                 }
-            }
+            }*/
             //System.out.println("The value of the objective function z = " + z);
         }
     }
@@ -145,8 +148,19 @@ public class SimplexTable {
         double mainEle = coeffMatrix.get(l).get(k);
         // System.out.println("The main elements are: " + mainEle);
 
+        // updating pivot row
+        for (int j = 0; j < coeffMatrix.get(l).size(); j++) {
+            if (j != k) {
+                coeffMatrix.get(l).set(j, coeffMatrix.get(l).get(j) / mainEle);
+            } else {
+                coeffMatrix.get(l).set(k, 1.0);
+            }
+        }
+        constTermCol.set(l, constTermCol.get(l) / mainEle);
+
+        // killing all other row
         for (int i = 0; i < constTermCol.size(); i++) {
-            double ratio = coeffMatrix.get(i).get(k) / mainEle;
+            double ratio = coeffMatrix.get(i).get(k);
             if (i != l) {
                 for (int j = 0; j < coeffMatrix.get(i).size(); j++) {
                     if (j != k) {
@@ -158,18 +172,11 @@ public class SimplexTable {
                 constTermCol.set(i, constTermCol.get(i) - ratio * constTermCol.get(l));
             }
         }
-        for (int j = 0; j < coeffMatrix.get(l).size(); j++) {
-            if (j != k) {
-                coeffMatrix.get(l).set(j, coeffMatrix.get(l).get(j) / mainEle);
-            } else {
-                coeffMatrix.get(l).set(k, 1.0);
-            }
-        }
-        constTermCol.set(l, constTermCol.get(l) / mainEle);
+        // calculation of maximization variable
+        z += constTermCol.get(l) * checkLineRow.get(k);
 
         basicVarCol.set(l, k);
         coeffOfBasicVarCol.set(l, coeffOfVarRow.get(k));
-
     }
 
     private void checkLineRowUpdate() {

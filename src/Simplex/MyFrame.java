@@ -100,9 +100,13 @@ public class MyFrame extends JFrame {
                     return;
                 }*/
 
-                String objectiveFunc = readFile("input\\optimum.txt");
+                /*String objectiveFunc = readFile("input\\optimum.txt");
                 String constraints = readFile("input\\constraints.txt");
-                String constants = readFile("input\\constants.txt");
+                String constants = readFile("input\\constants.txt");*/
+
+                String objectiveFunc = readFile("input\\F1.txt");
+                String constraints = readFile("input\\A1.txt");
+                String constants = readFile("input\\B1.txt");
 
                 String[] subConstraint = constraints.split("\n");
                 ArrayList<String> constraintList = new ArrayList<String>();

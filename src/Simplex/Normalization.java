@@ -67,7 +67,6 @@ public class Normalization {
         for (String str : temp) {
 
             Double d = Double.parseDouble(str.trim());
-            //d = d * -1;
             coeffOfDecisionVar.add(d);
         }
         numOfDecisionVar = coeffOfDecisionVar.size();
