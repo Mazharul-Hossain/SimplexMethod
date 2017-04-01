@@ -21,12 +21,13 @@ public class MyFrame extends JFrame {
     private JLabel objFuncLabel = new JLabel("Objective function");
     private JTextField objFunction = new JTextField();
     private JLabel constantsLabel = new JLabel("Constants");
-    private JTextArea constantsArea = new JTextArea();
+    private JTextField constantsArea = new JTextField();
     private JLabel constraintsLabel = new JLabel("Restrictions");
-    private JTextArea constraintsArea = new JTextArea();
+    private JTextField constraintsArea = new JTextField();
     private JButton button = new JButton("Solve");
     private JLabel solutionLabel = new JLabel("Optimal solution");
-    private JTextArea solutionShow = new JTextArea();
+    private JTextArea solutionShow = new JTextArea(5, 30);
+    JScrollPane scrollPane = new JScrollPane(solutionShow);
 
     public MyFrame() {
         Toolkit kit = Toolkit.getDefaultToolkit();
@@ -70,7 +71,7 @@ public class MyFrame extends JFrame {
 
         hGroup.addGroup(layout.createParallelGroup().addComponent(objFuncLabel).addComponent(objFunction).addComponent(constraintsLabel).addComponent(constraintsArea).addComponent(button));
 
-        hGroup.addGroup(layout.createParallelGroup().addComponent(constantsLabel).addComponent(constantsArea).addComponent(solutionLabel).addComponent(solutionShow));
+        hGroup.addGroup(layout.createParallelGroup().addComponent(constantsLabel).addComponent(constantsArea).addComponent(solutionLabel).addComponent(scrollPane));
 
         layout.setHorizontalGroup(hGroup);
 
@@ -80,33 +81,31 @@ public class MyFrame extends JFrame {
         vGroup.addGroup(layout.createParallelGroup().addComponent(objFuncLabel).addComponent(constantsLabel));
         vGroup.addGroup(layout.createParallelGroup().addComponent(objFunction).addComponent(constantsArea));
         vGroup.addGroup(layout.createParallelGroup().addComponent(constraintsLabel).addComponent(solutionLabel));
-        vGroup.addGroup(layout.createParallelGroup().addComponent(constraintsArea).addComponent(solutionShow));
+        vGroup.addGroup(layout.createParallelGroup().addComponent(constraintsArea).addComponent(scrollPane));
         vGroup.addGroup(layout.createParallelGroup().addComponent(button));
 
         layout.setVerticalGroup(vGroup);
+
+        objFunction.setText("F.txt");
+        constraintsArea.setText("A.txt");
+        constantsArea.setText("B.txt");
 
         button.addActionListener(new ActionListener() {
 
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                /*String objectiveFunc = objFunction.getText().trim();
+                String objectiveFunc = objFunction.getText().trim();
+                String constraints = constraintsArea.getText().trim();
+                String constants = constantsArea.getText().trim();
 
-                String constraints.txt = constraintsArea.getText().trim();
-
-                String constants.txt = constantsArea.getText().trim();
-
-                if (objectiveFunc.equals("") || constraints.txt.equals("")|| constants.txt.equals("")) {
+                if (objectiveFunc.equals("") || constraints.equals("") || constants.equals("")) {
                     return;
-                }*/
+                }
 
-                /*String objectiveFunc = readFile("input\\optimum.txt");
-                String constraints = readFile("input\\constraints.txt");
-                String constants = readFile("input\\constants.txt");*/
-
-                String objectiveFunc = readFile("input\\F1.txt");
-                String constraints = readFile("input\\A1.txt");
-                String constants = readFile("input\\B1.txt");
+                objectiveFunc = readFile("input\\" + objectiveFunc);
+                constraints = readFile("input\\" + constraints);
+                constants = readFile("input\\" + constants);
 
                 String[] subConstraint = constraints.split("\n");
                 ArrayList<String> constraintList = new ArrayList<String>();
@@ -141,7 +140,7 @@ public class MyFrame extends JFrame {
                 st.initSimplexTable(normalization.getNumOfDecisionVar(), normalization.getCoeffOfMatrix(),
                         normalization.getCoeffOfDecisionVar(), normalization.getConstantTermList());
                 st.execIteration();
-                solutionShow.setText(st.getStringBuffer().toString());
+                solutionShow.setText(solutionShow.getText() + st.getStringBuffer().toString());
             }
         }).start();
     }
